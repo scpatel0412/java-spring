@@ -1,42 +1,48 @@
 package com.example.demo.controllers;
 
+import java.util.Map;
+
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.WebRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class CustomErrorController implements ErrorController {
 
-    public CustomErrorController() {
-        super();
+    private final ErrorAttributes errorAttributes;
+
+    public CustomErrorController(ErrorAttributes errorAttributes) {
+        this.errorAttributes = errorAttributes;
     }
-    
-    
+
     @RequestMapping("/error")
-    public String handleError() {
-        // You can customize this method to redirect or return a custom error page
-        return "custom-404";  // This will refer to a view named "custom-404.html" in resources/templates
+    public String handleError(HttpServletRequest request, Model model) {
+        WebRequest webRequest = (WebRequest) request; // Cast HttpServletRequest to WebRequest
+        Map<String, Object> errorDetails = errorAttributes.getErrorAttributes(
+                webRequest, 
+                org.springframework.boot.web.error.ErrorAttributeOptions.defaults()
+        );
+        
+        int status = (int) errorDetails.get("status");
+
+        if (status == HttpStatus.FORBIDDEN.value()) {
+            model.addAttribute("message", "You are not authorized to access this page.");
+            return "403";
+        } else if (status == HttpStatus.NOT_FOUND.value()) {
+            model.addAttribute("message", "The page you are looking for does not exist.");
+            return "custom-404";
+        } else if (status == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+            model.addAttribute("message", "An error occurred on the server. Please try again later.");
+            return "custom-500";
+        }
+
+        model.addAttribute("message", "An unexpected error occurred.");
+        return "error"; // Fallback to a generic error page
     }
-
-    // @Override
-    // public String getErrorPath() {
-    //     return "/error";  // This is the default error page path
-    // }
-
-    // @RequestMapping("/not-found")
-    // @ResponseStatus(HttpStatus.NOT_FOUND)
-    // public String handle404() {
-    //     return "custom-404"; // Custom 404 page
-    // }
-
-    // @RequestMapping("/internal-server-error")
-    // @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    // public String handle500() {
-    //     return "custom-500"; // Custom 500 page
-    // }
-
-    // @Override
-    // public String getErrorPath() {
-    //     return "/error"; // You should use this path for any error pages
-    // }
 }
