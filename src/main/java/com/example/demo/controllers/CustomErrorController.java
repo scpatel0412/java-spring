@@ -31,10 +31,7 @@ public class CustomErrorController implements ErrorController {
         
         int status = (int) errorDetails.get("status");
 
-        if (status == HttpStatus.FORBIDDEN.value()) {
-            model.addAttribute("message", "You are not authorized to access this page.");
-            return "403";
-        } else if (status == HttpStatus.NOT_FOUND.value()) {
+        if (status == HttpStatus.NOT_FOUND.value()) {
             model.addAttribute("message", "The page you are looking for does not exist.");
             return "custom-404";
         } else if (status == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
