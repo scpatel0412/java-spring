@@ -7,8 +7,7 @@ public class ResponseObject<T, E> {
     private Integer status;
     private E error;
 
-
-    public ResponseObject(){}
+    public ResponseObject() {}
 
     public ResponseObject(Boolean success, T data, Integer status, E error) {
         this.success = success;
@@ -17,28 +16,28 @@ public class ResponseObject<T, E> {
         this.error = error;
     }
 
-    public Boolean getSuccess(){
+    public Boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(Boolean success){
+    public void setSuccess(Boolean success) {
         this.success = success;
     }
 
-    public T getData(){
+    public T getData() {
         return data;
     }
 
-    public void setData(T data){
-        this.data=data;
+    public void setData(T data) {
+        this.data = data;
     }
 
-    public E getError(){
+    public E getError() {
         return error;
     }
 
-    public void setError(E error){
-        this.error= error;
+    public void setError(E error) {
+        this.error = error;
     }
 
     public Integer getStatus() {
@@ -50,13 +49,18 @@ public class ResponseObject<T, E> {
     }
 
     @Override
-    public String toString(){
-        return "ResponseObject{" +
-        "success=" + success +
-        ", data=" + data +
-        ", status=" + status +
-        ", error=" + error +
-        '}';
+    public String toString() {
+        return (
+            "ResponseObject{" +
+            "success=" +
+            success +
+            ", data=" +
+            data +
+            ", status=" +
+            status +
+            ", error=" +
+            error +
+            '}'
+        );
     }
-    
 }

@@ -92,6 +92,61 @@
                 	<mainClass>com.example.customers.CustomersApplication</mainClass>
             	</configuration> -->
 			</plugin>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>2.43.0</version>
+				<configuration>
+					<formats>
+						<!-- prettier with java-plugin -->
+						<format>
+						<includes>
+							<include>src/main/java/**/**/**/*.java</include>
+							<include>src/main/java/**/**/**/**/*.java</include>
+						</includes>
+
+						<prettier>
+							<devDependencies>
+								<prettier>2.8.8</prettier>
+								<prettier-plugin-java>2.2.0</prettier-plugin-java>
+							</devDependencies>
+							<config>
+								<tabWidth>4</tabWidth>
+								<parser>java</parser>
+								<plugins>prettier-plugin-java</plugins><!-- this is only for prettier 3.0.0 and above: an additional 'plugins' config element is required -->
+							</config>
+						</prettier>
+						</format>
+
+						<!-- prettier with php-plugin -->
+						<format>
+						<includes>
+							<include>src/**/*.php</include>
+						</includes>
+
+						<prettier>
+							<!-- use the devDependencyProperties writing style when the property-names are not well-formed such as @prettier/plugin-php -->
+							<devDependencyProperties>
+							<property>
+								<name>prettier</name>
+								<value>2.8.8</value>
+							</property>
+							<property>
+								<name>@prettier/plugin-php</name>
+								<value>0.19.6</value>
+							</property>
+							</devDependencyProperties>
+							<config>
+								<tabWidth>3</tabWidth>
+								<parser>php</parser>
+								<plugins>@prettier/plugin-php</plugins><!-- this is only for prettier 3.0.0 and above: an additional 'plugins' config element is required -->
+							</config>
+						</prettier>
+						</format>
+
+					</formats>
+					</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

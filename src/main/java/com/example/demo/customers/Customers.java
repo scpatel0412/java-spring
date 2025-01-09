@@ -11,11 +11,11 @@ public class Customers {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String role;
 
-    public Customers() {
-    }
+    public Customers() {}
 
     public Customers(String name, String role) {
         this.name = name;

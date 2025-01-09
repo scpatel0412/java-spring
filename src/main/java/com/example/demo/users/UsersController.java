@@ -1,9 +1,11 @@
 package com.example.demo.users;
 
-import org.springframework.http.ResponseEntity;
+import com.example.demo.extras.ResponseObject;
+import java.util.Optional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -11,23 +13,45 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersController {
 
     private final UsersService usersService;
+    private final UsersRepository usersRepository;
 
-    public UsersController(UsersService usersService) {
+    public UsersController(
+        UsersService usersService,
+        UsersRepository usersRepository
+    ) {
         this.usersService = usersService;
+        this.usersRepository = usersRepository;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestParam String username, @RequestParam String password, @RequestParam String email) {
-        usersService.registerUser(username, password, email);
-        return ResponseEntity.ok("User registered successfully");
-    }
+    @PostMapping("me")
+    public ResponseObject<Users, String> profileDetails() {
+        try {
+            Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
 
-    @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestParam String username, @RequestParam String password) {
-        boolean isValid = usersService.validateUserCredentials(username, password);
-        if (isValid) {
-            return ResponseEntity.ok("Login successful");
+            Optional<Users> user = usersRepository.findByUsername(
+                authentication.getName()
+            );
+            // System.out.print();
+
+            if (!user.isPresent()) {
+                return new ResponseObject<>(false, null, 404, "User not found");
+            }
+
+            Users user1 = user.get();
+
+            System.out.print(user1);
+
+            return new ResponseObject<>(false, user1, 200, null);
+        } catch (Exception e) {
+            System.out.print(e);
+            return new ResponseObject<>(
+                false,
+                null,
+                500,
+                "Something went Wrong"
+            );
         }
-        return ResponseEntity.status(401).body("Invalid username or password");
     }
 }

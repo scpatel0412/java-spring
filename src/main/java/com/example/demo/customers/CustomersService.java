@@ -2,7 +2,6 @@ package com.example.demo.customers;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,6 @@ public class CustomersService {
     public Customers saveCustomer(Customers customers) {
         return customersRepository.save(customers);
     }
-
 
     public List<Customers> getAllCustomers() {
         return customersRepository.findAll();

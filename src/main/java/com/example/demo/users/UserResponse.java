@@ -1,6 +1,7 @@
 package com.example.demo.users;
 
 public class UserResponse {
+
     private Users user;
     private String token;
 

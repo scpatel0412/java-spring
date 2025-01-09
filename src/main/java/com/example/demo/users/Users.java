@@ -11,6 +11,7 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String username;
     private String password;
     private String email;
@@ -23,7 +24,17 @@ public class Users {
 
     public Users() {}
 
-    public Users(String username, String password, String email, String firstname,String lastname,String city,String country,String state,String address) {
+    public Users(
+        String username,
+        String password,
+        String email,
+        String firstname,
+        String lastname,
+        String city,
+        String country,
+        String state,
+        String address
+    ) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -35,7 +46,6 @@ public class Users {
         this.address = address;
     }
 
-    
     public Long getId() {
         return id;
     }
@@ -68,51 +78,51 @@ public class Users {
         this.email = email;
     }
 
-    public String getFirstname(){
+    public String getFirstname() {
         return firstname;
     }
 
-    public void setFirstName(String firstname){
+    public void setFirstName(String firstname) {
         this.firstname = firstname;
     }
 
-    public String getLastname(){
+    public String getLastname() {
         return lastname;
     }
 
-    public void setLastname(String lastname){
-        this.lastname=lastname;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
-    public String getCity(){
+    public String getCity() {
         return city;
     }
 
-    public void setCity(String city){
+    public void setCity(String city) {
         this.city = city;
     }
 
-    public String getCountry(){
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry(String country){
+    public void setCountry(String country) {
         this.country = country;
     }
 
-    public String getState(){
+    public String getState() {
         return state;
     }
 
-    public void setState(String state){
+    public void setState(String state) {
         this.state = state;
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address){
+    public void setAddress(String address) {
         this.address = address;
     }
 }

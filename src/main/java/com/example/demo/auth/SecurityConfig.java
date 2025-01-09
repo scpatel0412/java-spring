@@ -27,44 +27,67 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, CustomUserDetailsService customUserDetailsService) {
+    public SecurityConfig(
+        JwtAuthFilter jwtAuthFilter,
+        CustomUserDetailsService customUserDetailsService
+    ) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+        throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        http.csrf(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers.httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-                        // .requestMatchers(WHITE_LIST_URL).permitAll()
-                        .anyRequest().authenticated())
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(customAuthenticationEntryPoint())
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .headers(headers ->
+                headers.httpStrictTransportSecurity(
+                    HeadersConfigurer.HstsConfig::disable
                 )
-                // .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
-                // httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+            )
+            .authorizeHttpRequests(auth ->
+                auth
+                    .requestMatchers(HttpMethod.OPTIONS, "/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/**")
+                    .permitAll()
+                    // .requestMatchers(WHITE_LIST_URL).permitAll()
+                    .anyRequest()
+                    .authenticated()
+            )
+            .exceptionHandling(exception ->
+                exception.authenticationEntryPoint(
+                    customAuthenticationEntryPoint()
+                )
+            )
+            // .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+            // httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            );
         // .headers(httpSecurityHeadersConfigurer ->
         // httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
         // //to make accessible h2 console, it works as frame
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(
+            jwtAuthFilter,
+            UsernamePasswordAuthenticationFilter.class
+        );
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:5173"); // Allow React frontend (change if different port/domain)
-        configuration.addAllowedMethod("*");  // Allow all HTTP methods (GET, POST, etc.)
-        configuration.addAllowedHeader("*");  // Allow all headers
+        configuration.addAllowedOrigin("http://localhost:5173"); // Allow React frontend (change if different
+        // port/domain)
+        configuration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, etc.)
+        configuration.addAllowedHeader("*"); // Allow all headers
         configuration.setAllowCredentials(true); // Allow credentials (cookies, headers, etc.)
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);  // Apply CORS configuration to all routes
+        UrlBasedCorsConfigurationSource source =
+            new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Apply CORS configuration to all routes
         return source;
     }
 
@@ -74,7 +97,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(
+        AuthenticationConfiguration config
+    ) throws Exception {
         return config.getAuthenticationManager();
     }
 
@@ -94,7 +119,6 @@ public class SecurityConfig {
             response.getWriter().write("{\"message\": \"Unauthorized\"}");
         };
     }
-
     // @Bean
     // public AuthenticationManager
     // authenticationManager(AuthenticationManagerBuilder builder) throws Exception
