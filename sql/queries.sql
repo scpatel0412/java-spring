@@ -1,0 +1,24 @@
+CREATE DATABASE IF NOT EXISTS spring_practice;
+
+USE spring_practice;
+
+CREATE TABLE IF NOT EXISTS customers (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    firstname VARCHAR(255) NOT NULL,
+    lastname VARCHAR(255) NOT NULL,
+    city VARCHAR(255) NOT NULL,
+    country VARCHAR(255) NOT NULL,
+    state VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    PRIMARY KEY(id)
+);
