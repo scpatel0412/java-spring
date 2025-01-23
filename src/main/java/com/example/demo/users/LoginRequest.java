@@ -4,6 +4,7 @@ public class LoginRequest {
 
     private String email;
     private String password;
+    private String role;
 
     // Getters and setters
     public String getEmail() {
@@ -20,5 +21,13 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role){
+        this.role=role;
     }
 }

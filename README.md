@@ -32,6 +32,15 @@ export $(cat .env | xargs) && java -jar ./target/demo-0.0.1-SNAPSHOT.jar
 docker-compose up -d
 ```
 
+#### run this command to get inside mysql-container
+```bash
+docker exec -it your-container mysql -u root -p
+```
+#### get ip address of container from docker
+```bash
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' your_mysql_container_name_or_id
+```
+ 
 
 ## Authors
 ### Feel free to contact me

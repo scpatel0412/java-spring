@@ -1,14 +1,19 @@
 package com.example.demo.users;
 
-import com.example.demo.config.JwtUtil;
-import com.example.demo.extras.ResponseObject;
+import java.sql.Timestamp;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.config.JwtUtil;
+import com.example.demo.extras.ResponseObject;
+import com.example.demo.user_roles.UserRoles;
+import com.example.demo.user_roles.UserRolesRepository;
 
 @RestController
 @RequestMapping("/auth")
@@ -17,6 +22,7 @@ public class AuthController {
     private final UsersService usersService;
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRolesRepository userRolesRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -24,42 +30,55 @@ public class AuthController {
     public AuthController(
         UsersService usersService,
         UsersRepository usersRepository,
-        PasswordEncoder passwordEncoder
+        PasswordEncoder passwordEncoder,
+        UserRolesRepository userRolesRepository
     ) {
         this.usersService = usersService;
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userRolesRepository = userRolesRepository;
     }
 
     @PostMapping("/register")
     public ResponseObject<Users, String> demoFunction(
-        @RequestBody Users users
+        @RequestBody RegisterRequest registerRequest
     ) {
         try {
             if (
                 usersRepository
-                    .findByUsername(users.getUsername())
+                    .findByUsername(registerRequest.getUsername())
                     .isPresent() ||
-                usersRepository.findByEmail(users.getEmail()).isPresent()
+                usersRepository.findByEmail(registerRequest.getEmail()).isPresent()
             ) {
                 return new ResponseObject<>(false, null, 404, "user exists");
             }
 
-            // Users users = new Users();
+            Optional<UserRoles> userRole = userRolesRepository.findByRole(registerRequest.getRole());
 
-            users.setUsername(users.getUsername());
-            users.setPassword(passwordEncoder.encode(users.getPassword()));
-            users.setEmail(users.getEmail());
-            users.setCity(users.getCity());
-            users.setCountry(users.getCountry());
-            users.setState(users.getState());
-            users.setAddress(users.getAddress());
-            users.setFirstName(users.getFirstname());
-            users.setLastname(users.getLastname());
+            if (!userRole.isPresent()) {
+                return new ResponseObject<>(false, null, 404, "no role found");
+            }
 
-            Users users1 = usersRepository.save(users);
+            // if()
 
-            return new ResponseObject<>(true, users1, 200, null);
+            Users users = new Users();
+
+            users.setUsername(registerRequest.getUsername());
+            users.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            users.setEmail(registerRequest.getEmail());
+            users.setCity(registerRequest.getCity());
+            users.setCountry(registerRequest.getCountry());
+            users.setState(registerRequest.getState());
+            users.setAddress(registerRequest.getAddress());
+            users.setFirstName(registerRequest.getFirstname());
+            users.setLastname(registerRequest.getLastname());
+            users.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            users.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            users.setUserRole(userRole.get());
+
+            Users users2 = usersRepository.save(users);
+
+            return new ResponseObject<>(true, users2, 200, null);
         } catch (Exception e) {
             return new ResponseObject<>(false, null, 500, e.getMessage());
         }
@@ -80,6 +99,12 @@ public class AuthController {
             }
 
             Users user = optionalUser.get();
+
+            UserRoles userRole = user.getUserRole();
+
+            if(userRole == null || !userRole.getRole().equals(loginRequest.getRole())){
+                return new ResponseObject<>(false, null, 403, "User does not have this role");
+            }
 
             if (
                 !passwordEncoder.matches(

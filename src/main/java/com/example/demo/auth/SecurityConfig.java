@@ -52,6 +52,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/**")
                     .permitAll()
+                    .requestMatchers(HttpMethod.GET,"/api/user-roles/roles/**")
+                    .permitAll()
                     // .requestMatchers(WHITE_LIST_URL).permitAll()
                     .anyRequest()
                     .authenticated()
