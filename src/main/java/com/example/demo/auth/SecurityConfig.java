@@ -52,7 +52,7 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/**")
                     .permitAll()
-                    .requestMatchers(HttpMethod.GET,"/api/user-roles/roles/**")
+                    .requestMatchers(HttpMethod.GET,"/api/user-roles/roles/**","/countries/**")
                     .permitAll()
                     // .requestMatchers(WHITE_LIST_URL).permitAll()
                     .anyRequest()

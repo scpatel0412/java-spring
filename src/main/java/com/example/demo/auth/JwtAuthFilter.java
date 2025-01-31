@@ -64,6 +64,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (request.getRequestURI().startsWith("/countries/entry")) {
+            System.out.println("Skipping JWT filter for /auth/** route");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
 
         System.out.println("Authorization Header: " + authHeader);
